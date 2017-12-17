@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -133,10 +134,37 @@ func (r *RequestLog) GetLevel() LogLevel {
 }
 
 func (r *RequestLog) Format() string {
-	if r.GetLevel() == ERROR {
-		return withRed(r.Resource)
+	// format app log
+	appLogLines := make([]string, 0, len(r.AppLogs))
+	for _, a := range r.AppLogs {
+		line := fmt.Sprintf("     %s 14:31:25.131 %s", a.Level.symbol(), a.Message)
+		appLogLines = append(appLogLines, line)
 	}
-	return fmt.Sprintf("\x1b[36mTEST\x1b[0m")
+	appLogStr := strings.Join(appLogLines, "\n")
+	if appLogStr != "" {
+		appLogStr += "\n" // add trailing newline
+	}
+
+	// format entire request log
+	level := r.GetLevel()
+	return fmt.Sprintf(" %s 14:31:25.965 %d %s\n%s", level.symbol(), r.Status, r.Resource, appLogStr)
+}
+
+func (l LogLevel) symbol() string {
+	switch l {
+	case DEBUG:
+		return "[D]"
+	case INFO:
+		return withCyan("[I]")
+	case WARNING:
+		return withYellow("[W]")
+	case ERROR:
+		return withRed("[E]")
+	case CRITICAL:
+		return withMagenta("[C]")
+	default:
+		return ""
+	}
 }
 
 func withCyan(s string) string {

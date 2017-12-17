@@ -1,7 +1,8 @@
-gaemonitor
+gaemonitor or gae-log-viewer or gaelogviewr
 ===
 
-# SYNOPSIS
+SYNOPSIS
+---
 ```sh
 # app server
 dev_appserver.py app.yaml --logs_path=/tmp/gaelog.db
@@ -17,6 +18,7 @@ And open browser: http://localhost:92384/
 gaemonitor --logs_path=/tmp/gaelog.db --no-ur
 ```
 
-# Web UI
+Web UI
+---
 
 * Send log line to web browser through Server Sent Events
