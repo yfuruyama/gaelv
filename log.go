@@ -56,47 +56,51 @@ const (
 )
 
 type RequestLog struct {
-	ID            int
-	UserRequestID string
-	AppID         string
-	VersionID     string
-	Module        string
-	IP            string
-	Nickname      string
-	StartTime     LogTime
-	EndTime       LogTime
-	Method        string
-	Resource      string
-	HTTPVersion   string
-	Status        int32
-	ResponseSize  int64
-	UserAgent     string
-	URLMapEntry   string
-	Host          string
-	Referrer      string
-	TaskQueueName string
-	TaskName      string
-	Latency       time.Duration
-	MCycles       int64
-	Finished      bool
-	AppLogs       []AppLog
+	ID            int           `json:"id"`
+	UserRequestID string        `json:"userRequestId"`
+	AppID         string        `json:"appId"`
+	VersionID     string        `json:"versionId"`
+	Module        string        `json:"module"`
+	IP            string        `json:"ip"`
+	Nickname      string        `json:"nickname"`
+	StartTime     LogTime       `json:"startTime"`
+	EndTime       LogTime       `json:"endTime"`
+	Method        string        `json:"method"`
+	Resource      string        `json:"resource"`
+	HTTPVersion   string        `json:"httpVersion"`
+	Status        int32         `json:"status"`
+	ResponseSize  int64         `json:"responseSize"`
+	UserAgent     string        `json:"userAgent"`
+	URLMapEntry   string        `json:"urlMapEntry"`
+	Host          string        `json:"host"`
+	Referrer      string        `json:"referrer"`
+	TaskQueueName string        `json:"taskQueueName"`
+	TaskName      string        `json:"taskName"`
+	Latency       time.Duration `json:"latency"`
+	MCycles       int64         `json:"mCycles"`
+	Finished      bool          `json:"finished"`
+	AppLogs       []AppLog      `json:"appLogs"`
 }
 
 type AppLog struct {
-	ID      int
-	Time    LogTime
-	Level   LogLevel
-	Message string
+	ID      int      `json:"id"`
+	Time    LogTime  `json:"time"`
+	Level   LogLevel `json:"level"`
+	Message string   `json:"message"`
 }
 
 type LogTime time.Time
 
 func (t *LogTime) Scan(src interface{}) error {
-	unixnano := src.(int64)
-	sec := int64(unixnano / 1000000)
-	nanosec := unixnano - (sec * 1000000)
+	usec := src.(int64)
+	sec := int64(usec / 1e6)
+	nanosec := (usec * 1e3) - (sec * 1e9)
 	*t = LogTime(time.Unix(sec, nanosec))
 	return nil
+}
+
+func (t LogTime) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf("%f", float64(time.Time(t).UnixNano())/1e6)), nil
 }
 
 func FetchRequestLog(db *sql.DB, id int) (*RequestLog, error) {
@@ -140,7 +144,7 @@ func (r *RequestLog) GetLevel() LogLevel {
 func (r *RequestLog) LatencyStr() string {
 	// over 1 sec.
 	if r.Latency/1e9 > 0 {
-		return fmt.Sprintf("%0.1fs", float32(r.Latency/1e9))
+		return fmt.Sprintf("%0.1fs", float64(r.Latency/1e9))
 	} else {
 		return fmt.Sprintf("%dms", r.Latency/1e6)
 	}
@@ -149,7 +153,7 @@ func (r *RequestLog) LatencyStr() string {
 func (r *RequestLog) ResponseSizeStr() string {
 	// over 1 KB
 	if r.ResponseSize >= 1024 {
-		return fmt.Sprintf("%0.1fKB", float32(r.ResponseSize/1024))
+		return fmt.Sprintf("%0.1fKB", float64(r.ResponseSize/1024))
 	} else {
 		return fmt.Sprintf("%dB", r.ResponseSize)
 	}
@@ -161,4 +165,25 @@ func (r *RequestLog) ToJSON() string {
 		log.Fatal(err)
 	}
 	return string(j)
+}
+
+func (l LogLevel) String() string {
+	switch l {
+	case DEBUG:
+		return "DEBUG"
+	case INFO:
+		return "INFO"
+	case WARNING:
+		return "WARNING"
+	case ERROR:
+		return "ERROR"
+	case CRITICAL:
+		return "CRITICAL"
+	default:
+		return ""
+	}
+}
+
+func (l LogLevel) MarshalJSON() ([]byte, error) {
+	return []byte(`"` + l.String() + `"`), nil
 }
