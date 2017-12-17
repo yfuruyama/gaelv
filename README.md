@@ -1,17 +1,26 @@
 # gaelv
 gaelv is a Log Viewer for Google App Engine local development.
 
-## SYNOPSIS
-```sh
-# run your app server
-dev_appserver.py app.yaml --logs_path=/tmp/gaelog.db
+## Install
+```
+go get -u github.com/addsict/gaelv
+```
 
-# run log viewer
+## How to use
+
+1. Run your app server (`dev_appserver.py`) with `--logs_path=</path/to/log.db>` option.
+```
+dev_appserver.py app.yaml --logs_path=/tmp/gaelog.db
+```
+
+2. Run `gaelv` with same `--logs_path` option.
+```
 gaelv --logs_path=/tmp/gaelog.db
 ```
 
-And open browser: http://localhost:9090/
+3. Open http://localhost:9090/ on your browser.
 
 ## TODO
 
 * build with static files using go-bindata
+* add --no-server option

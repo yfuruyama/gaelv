@@ -4,11 +4,19 @@ import (
 	"flag"
 	"fmt"
 	"net/http"
+	"os"
 
 	"log"
 
 	"github.com/addsict/gaelv"
 )
+
+var usage = `Usage: gaelv [options...]
+
+Options:
+    --logs_path        Path to logs
+    --no-server        Don't serve http server
+`
 
 func main() {
 	var logsPath string
@@ -16,6 +24,7 @@ func main() {
 
 	flag.StringVar(&logsPath, "logs_path", "", "logs path")
 	flag.IntVar(&port, "port", 9090, "server port")
+	flag.Usage = func() { fmt.Fprint(os.Stderr, usage) }
 	flag.Parse()
 
 	provider := gaelv.NewProvider(logsPath)

@@ -144,18 +144,18 @@ func (r *RequestLog) GetLevel() LogLevel {
 func (r *RequestLog) LatencyStr() string {
 	// over 1 sec.
 	if r.Latency/1e9 > 0 {
-		return fmt.Sprintf("%0.1fs", float64(r.Latency/1e9))
+		return fmt.Sprintf("%0.1f s", float64(r.Latency/1e9))
 	} else {
-		return fmt.Sprintf("%dms", r.Latency/1e6)
+		return fmt.Sprintf("%d ms", r.Latency/1e6)
 	}
 }
 
 func (r *RequestLog) ResponseSizeStr() string {
 	// over 1 KB
 	if r.ResponseSize >= 1024 {
-		return fmt.Sprintf("%0.1fKB", float64(r.ResponseSize/1024))
+		return fmt.Sprintf("%0.1f KB", float64(r.ResponseSize/1024))
 	} else {
-		return fmt.Sprintf("%dB", r.ResponseSize)
+		return fmt.Sprintf("%d B", r.ResponseSize)
 	}
 }
 

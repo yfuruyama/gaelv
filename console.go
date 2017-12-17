@@ -2,7 +2,6 @@ package gaelv
 
 import (
 	"fmt"
-	"strings"
 	"time"
 )
 
@@ -15,21 +14,22 @@ func NewConsole() *Console {
 
 func (c *Console) PrintLog(r *RequestLog) {
 	// format app log
-	appLogLines := make([]string, 0, len(r.AppLogs))
-	for _, a := range r.AppLogs {
+	var appLogStr string
+	for i, a := range r.AppLogs {
 		timestamp := time.Time(a.Time).Format("15:04:05.000")
-		line := fmt.Sprintf("    %s %s %s", timestamp, symbolForLevel(a.Level), a.Message)
-		appLogLines = append(appLogLines, line)
-	}
-	appLogStr := strings.Join(appLogLines, "\n")
-	if appLogStr != "" {
-		appLogStr += "\n" // add trailing newline
+		var line string
+		if i != len(r.AppLogs)-1 {
+			line = fmt.Sprintf("    ├───── %s %s %s\n", timestamp, symbolForLevel(a.Level), a.Message)
+		} else {
+			line = fmt.Sprintf("    └───── %s %s %s\n", timestamp, symbolForLevel(a.Level), a.Message)
+		}
+		appLogStr += line
 	}
 
 	// format entire request log
 	level := r.GetLevel()
 	timestamp := time.Time(r.StartTime).Format("2006-01-02 15:04:05.000")
-	fmt.Printf("%s %s %s %d %s %s %s\n%s", timestamp, symbolForLevel(level), r.Method, r.Status, r.ResponseSizeStr(), r.LatencyStr(), r.Resource, appLogStr)
+	fmt.Printf("%s %s %s | %d | %s | %s | %s\n%s\n", timestamp, symbolForLevel(level), r.Method, r.Status, r.ResponseSizeStr(), r.LatencyStr(), r.Resource, appLogStr)
 }
 
 func symbolForLevel(l LogLevel) string {
