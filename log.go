@@ -62,8 +62,7 @@ type RequestLog struct {
 	Module        string
 	IP            string
 	Nickname      string
-	StartTime     int
-	// StartTime     time.Time
+	StartTime     LogTime
 	EndTime       LogTime
 	Method        string
 	Resource      string
@@ -83,9 +82,8 @@ type RequestLog struct {
 }
 
 type AppLog struct {
-	ID   int
-	Time int
-	// Time    time.Time
+	ID      int
+	Time    LogTime
 	Level   LogLevel
 	Message string
 }
@@ -94,13 +92,15 @@ type LogTime time.Time
 
 func (t *LogTime) Scan(src interface{}) error {
 	unixnano := src.(int64)
-	*t = LogTime(time.Unix(int64(unixnano/1000000), 0))
+	sec := int64(unixnano / 1000000)
+	nanosec := unixnano - (sec * 1000000)
+	*t = LogTime(time.Unix(sec, nanosec))
 	return nil
 }
 
 func FetchRequestLog(db *sql.DB, id int) (*RequestLog, error) {
 	var r RequestLog
-	if err := db.QueryRow("SELECT id, start_time, status, resource FROM RequestLogs WHERE id = ?", id).Scan(&r.ID, &r.StartTime, &r.Status, &r.Resource); err != nil {
+	if err := db.QueryRow("SELECT id, start_time, end_time, method, status, response_size, resource FROM RequestLogs WHERE id = ?", id).Scan(&r.ID, &r.StartTime, &r.EndTime, &r.Method, &r.Status, &r.ResponseSize, &r.Resource); err != nil {
 		return nil, err
 	}
 
@@ -133,11 +133,32 @@ func (r *RequestLog) GetLevel() LogLevel {
 	return level
 }
 
+func (r *RequestLog) LatencyStr() string {
+	latencyNanos := time.Time(r.EndTime).Sub(time.Time(r.StartTime)).Nanoseconds()
+	// over 1 sec.
+	if latencyNanos/1000000000 > 0 {
+		return fmt.Sprintf("%0.1fs", float32(latencyNanos/1000000000))
+	} else {
+		return fmt.Sprintf("%dms", latencyNanos/1000000)
+	}
+}
+
+func (r *RequestLog) ResponseSizeStr() string {
+	// over 1 KB
+	if r.ResponseSize >= 1024 {
+		return fmt.Sprintf("%0.1fKB", float32(r.ResponseSize/1024))
+	} else {
+		return fmt.Sprintf("%dB", r.ResponseSize)
+	}
+}
+
+// 2017-12-17 19:33:47.017 JST POST 204 0 B 1.1 s CloudPubSub-Google /_ah/push-handlers/
 func (r *RequestLog) Format() string {
 	// format app log
 	appLogLines := make([]string, 0, len(r.AppLogs))
 	for _, a := range r.AppLogs {
-		line := fmt.Sprintf("     %s 14:31:25.131 %s", a.Level.symbol(), a.Message)
+		timestamp := time.Time(a.Time).Format("15:04:05.000")
+		line := fmt.Sprintf("    %s %s %s", timestamp, a.Level.symbol(), a.Message)
 		appLogLines = append(appLogLines, line)
 	}
 	appLogStr := strings.Join(appLogLines, "\n")
@@ -147,7 +168,8 @@ func (r *RequestLog) Format() string {
 
 	// format entire request log
 	level := r.GetLevel()
-	return fmt.Sprintf(" %s 14:31:25.965 %d %s\n%s", level.symbol(), r.Status, r.Resource, appLogStr)
+	timestamp := time.Time(r.StartTime).Format("2006-01-02 15:04:05.000")
+	return fmt.Sprintf("%s %s %s %d %s %s %s\n%s", timestamp, level.symbol(), r.Method, r.Status, r.ResponseSizeStr(), r.LatencyStr(), r.Resource, appLogStr)
 }
 
 func (l LogLevel) symbol() string {

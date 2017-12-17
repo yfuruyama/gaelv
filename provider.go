@@ -31,7 +31,8 @@ func (p *Provider) Next() (*RequestLog, error) {
 	var id int
 	for {
 		<-ticker.C
-		if err := p.db.QueryRow("SELECT id FROM RequestLogs WHERE id > ?", p.lastRequestID).Scan(&id); err != nil {
+		// finished=0 means the request is still processing
+		if err := p.db.QueryRow("SELECT id FROM RequestLogs WHERE id > ? AND finished = 1", p.lastRequestID).Scan(&id); err != nil {
 			switch {
 			case err == sql.ErrNoRows:
 				continue
