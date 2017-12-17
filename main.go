@@ -1,6 +1,9 @@
 package main
 
-import "log"
+import (
+	"fmt"
+	"log"
+)
 
 func main() {
 	provider := NewProvider("/tmp/gaelog.db")
@@ -9,6 +12,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Println("%#v", requestLog)
+		// log.Println(requestLog.Format())
+		fmt.Printf(requestLog.Format())
 	}
 }

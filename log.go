@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 )
 
@@ -45,9 +46,11 @@ CREATE TABLE IF NOT EXISTS AppLogs (
 type LogLevel int
 
 const (
-	WARN LogLevel = iota
+	DEBUG LogLevel = iota
 	INFO
+	WARNING
 	ERROR
+	CRITICAL
 )
 
 type RequestLog struct {
@@ -114,4 +117,40 @@ func FetchRequestLog(db *sql.DB, id int) (*RequestLog, error) {
 	}
 
 	return &r, nil
+}
+
+func (r *RequestLog) GetLevel() LogLevel {
+	if len(r.AppLogs) == 0 {
+		return INFO
+	}
+	level := r.AppLogs[0].Level
+	for _, a := range r.AppLogs {
+		if a.Level > level {
+			level = a.Level
+		}
+	}
+	return level
+}
+
+func (r *RequestLog) Format() string {
+	if r.GetLevel() == ERROR {
+		return withRed(r.Resource)
+	}
+	return fmt.Sprintf("\x1b[36mTEST\x1b[0m")
+}
+
+func withCyan(s string) string {
+	return fmt.Sprintf("\x1b[36m%s\x1b[0m", s)
+}
+
+func withYellow(s string) string {
+	return fmt.Sprintf("\x1b[33m%s\x1b[0m", s)
+}
+
+func withRed(s string) string {
+	return fmt.Sprintf("\x1b[31m%s\x1b[0m", s)
+}
+
+func withMagenta(s string) string {
+	return fmt.Sprintf("\x1b[35m%s\x1b[0m", s)
 }
