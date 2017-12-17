@@ -100,7 +100,7 @@ func (t *LogTime) Scan(src interface{}) error {
 }
 
 func (t LogTime) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%f", float64(time.Time(t).UnixNano())/1e6)), nil
+	return []byte(fmt.Sprintf("%f", float64(time.Time(t).UnixNano())/1e9)), nil
 }
 
 func FetchRequestLog(db *sql.DB, id int) (*RequestLog, error) {

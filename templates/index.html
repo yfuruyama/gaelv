@@ -10,7 +10,7 @@
     }
   </style>
 </head>
-<body>
+<body class="mdc-typography">
 <header class="mdc-toolbar mdc-toolbar--fixed">
   <div class="mdc-toolbar__row">
     <section class="mdc-toolbar__section mdc-toolbar__section--align-start">
@@ -23,7 +23,7 @@
   <section>
     <ul id="log-lines" class="mdc-list">
       <li v-for="log in logs" class="mdc-list-item">
-      ${log.startTime}
+      ${formattedTime(log.startTime)} ${log.method} ${log.status} ${log.responseSize} ${log.latency} ${log.resource}
       </li>
     </ul>
   </section>
@@ -35,6 +35,17 @@
     delimiters: ['${', '}'],
     data: {
       logs: [],
+    },
+computed: {
+  //logLevel:
+},
+    methods: {
+      formattedTime: function (time) {
+        var d = new Date(time * 1000);
+        // TODO: zero padding
+        return `${d.getFullYear()}-${(d.getMonth() + 1)}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}.${d.getMilliseconds()}`
+             ;
+      }
     }
   });
 
