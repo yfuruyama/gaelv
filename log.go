@@ -2,8 +2,9 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
-	"strings"
+	"log"
 	"time"
 )
 
@@ -152,55 +153,10 @@ func (r *RequestLog) ResponseSizeStr() string {
 	}
 }
 
-// 2017-12-17 19:33:47.017 JST POST 204 0 B 1.1 s CloudPubSub-Google /_ah/push-handlers/
-func (r *RequestLog) Format() string {
-	// format app log
-	appLogLines := make([]string, 0, len(r.AppLogs))
-	for _, a := range r.AppLogs {
-		timestamp := time.Time(a.Time).Format("15:04:05.000")
-		line := fmt.Sprintf("    %s %s %s", timestamp, a.Level.symbol(), a.Message)
-		appLogLines = append(appLogLines, line)
+func (r *RequestLog) ToJSON() string {
+	j, err := json.Marshal(r)
+	if err != nil {
+		log.Fatal(err)
 	}
-	appLogStr := strings.Join(appLogLines, "\n")
-	if appLogStr != "" {
-		appLogStr += "\n" // add trailing newline
-	}
-
-	// format entire request log
-	level := r.GetLevel()
-	timestamp := time.Time(r.StartTime).Format("2006-01-02 15:04:05.000")
-	return fmt.Sprintf("%s %s %s %d %s %s %s\n%s", timestamp, level.symbol(), r.Method, r.Status, r.ResponseSizeStr(), r.LatencyStr(), r.Resource, appLogStr)
-}
-
-func (l LogLevel) symbol() string {
-	switch l {
-	case DEBUG:
-		return "[D]"
-	case INFO:
-		return withCyan("[I]")
-	case WARNING:
-		return withYellow("[W]")
-	case ERROR:
-		return withRed("[E]")
-	case CRITICAL:
-		return withMagenta("[C]")
-	default:
-		return ""
-	}
-}
-
-func withCyan(s string) string {
-	return fmt.Sprintf("\x1b[36m%s\x1b[0m", s)
-}
-
-func withYellow(s string) string {
-	return fmt.Sprintf("\x1b[33m%s\x1b[0m", s)
-}
-
-func withRed(s string) string {
-	return fmt.Sprintf("\x1b[31m%s\x1b[0m", s)
-}
-
-func withMagenta(s string) string {
-	return fmt.Sprintf("\x1b[35m%s\x1b[0m", s)
+	return string(j)
 }

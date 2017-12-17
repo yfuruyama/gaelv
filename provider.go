@@ -13,6 +13,10 @@ type Provider struct {
 	db            *sql.DB
 }
 
+const (
+	POLLING_INTERVAL time.Duration = 500 * time.Millisecond
+)
+
 func NewProvider(logsPath string) *Provider {
 	db, err := sql.Open("sqlite3", logsPath)
 	if err != nil {
@@ -27,7 +31,7 @@ func NewProvider(logsPath string) *Provider {
 
 // block until next log comes in
 func (p *Provider) Next() (*RequestLog, error) {
-	ticker := time.NewTicker(500 * time.Millisecond)
+	ticker := time.NewTicker(POLLING_INTERVAL)
 	var id int
 	for {
 		<-ticker.C

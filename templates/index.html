@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>GAE Log Viewer</title>
+</head>
+<body>
+
+Test
+
+<script type="text/javascript">
+  var source = new EventSource('/event/logs');
+  source.onmessage = function(e) {
+    document.body.innerHTML += e.data + '<br>';
+  };
+</script>
+</body>
+</html>
