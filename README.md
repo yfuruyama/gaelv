@@ -1,24 +1,13 @@
-gaemonitor or gae-log-viewer or gaelogviewr
-===
+# gaelv
+gaelv is a Log Viewer for Google App Engine local development.
 
-SYNOPSIS
----
+## SYNOPSIS
 ```sh
-# app server
+# run your app server
 dev_appserver.py app.yaml --logs_path=/tmp/gaelog.db
 
-# log viewer
-gaemonitor --logs_path=/tmp/gaelog.db
+# run log viewer
+gaelv --logs_path=/tmp/gaelog.db
 ```
 
-And open browser: http://localhost:92384/
-
-```sh
-# to console
-gaemonitor --logs_path=/tmp/gaelog.db --no-ur
-```
-
-Web UI
----
-
-* Send log line to web browser through Server Sent Events
+And open browser: http://localhost:9090/

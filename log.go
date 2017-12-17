@@ -1,4 +1,4 @@
-package main
+package gaelv
 
 import (
 	"database/sql"
@@ -105,6 +105,9 @@ func FetchRequestLog(db *sql.DB, id int) (*RequestLog, error) {
 		return nil, err
 	}
 
+	// As of 2017-12-17 latency column in the RequestLogs table is not updated
+	r.Latency = time.Duration(time.Time(r.EndTime).Sub(time.Time(r.StartTime)).Nanoseconds())
+
 	// var appLogs
 	rows, err := db.Query("SELECT id, timestamp, level, message FROM AppLogs WHERE request_id = ?", id)
 	if err != nil {
@@ -135,12 +138,11 @@ func (r *RequestLog) GetLevel() LogLevel {
 }
 
 func (r *RequestLog) LatencyStr() string {
-	latencyNanos := time.Time(r.EndTime).Sub(time.Time(r.StartTime)).Nanoseconds()
 	// over 1 sec.
-	if latencyNanos/1000000000 > 0 {
-		return fmt.Sprintf("%0.1fs", float32(latencyNanos/1000000000))
+	if r.Latency/1e9 > 0 {
+		return fmt.Sprintf("%0.1fs", float32(r.Latency/1e9))
 	} else {
-		return fmt.Sprintf("%dms", latencyNanos/1000000)
+		return fmt.Sprintf("%dms", r.Latency/1e6)
 	}
 }
 
