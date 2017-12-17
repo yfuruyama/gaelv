@@ -27,9 +27,7 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			go func() {
-				logc <- requestLog
-			}()
+			logc <- requestLog // TODO: blocked?
 			console.PrintLog(requestLog)
 		}
 	}()

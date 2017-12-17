@@ -37,11 +37,11 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 
 	t, err := template.ParseFiles("templates/index.html")
 	if err != nil {
-		log.Fatal("error parsing template")
+		log.Fatalf("error parsing template: %s", err)
 	}
 
 	err = t.Execute(w, nil)
 	if err != nil {
-		log.Fatal("error creating html")
+		log.Fatalf("error creating html: %s", err)
 	}
 }

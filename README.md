@@ -11,3 +11,7 @@ gaelv --logs_path=/tmp/gaelog.db
 ```
 
 And open browser: http://localhost:9090/
+
+## TODO
+
+* build with static files using go-bindata
