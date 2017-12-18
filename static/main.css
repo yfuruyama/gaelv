@@ -6,3 +6,26 @@
 	rotate(90deg);
 	border-color: transparent transparent transparent rgba(0, 0, 0, .987);
 }
+
+.filter-input {
+	width: 100%;
+	height: 24px;
+	padding: 1px 0px 2px 6px;
+}
+
+.logview {
+	padding: 10px 0 0 0;
+}
+
+li {
+	border-top: solid 1px #eee;
+	/* border-bottom: solid 1px #eee; */
+}
+
+li:nth-child(2n+0) {
+	background-color: #fff;
+}
+
+li:nth-child(2n+1) {
+	background-color: #fafafa;
+}
