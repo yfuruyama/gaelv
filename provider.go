@@ -2,7 +2,9 @@ package gaelv
 
 import (
 	"database/sql"
-	"log"
+	"errors"
+	"fmt"
+	"os"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -17,16 +19,20 @@ const (
 	POLLING_INTERVAL time.Duration = 500 * time.Millisecond
 )
 
-func NewProvider(logsPath string) *Provider {
+func NewProvider(logsPath string) (*Provider, error) {
+	if _, err := os.Stat(logsPath); os.IsNotExist(err) {
+		return nil, errors.New(fmt.Sprintf("Log file not exist: %s", logsPath))
+	}
+
 	db, err := sql.Open("sqlite3", logsPath)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	return &Provider{
 		lastRequestID: 0,
 		db:            db,
-	}
+	}, nil
 }
 
 // block until next log comes in
