@@ -1,0 +1,8 @@
+.non-expanded {
+	display: none;
+}
+
+.symbol-no-expanded ::after {
+	rotate(90deg);
+	border-color: transparent transparent transparent rgba(0, 0, 0, .987);
+}

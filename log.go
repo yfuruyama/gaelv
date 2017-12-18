@@ -112,7 +112,6 @@ func FetchRequestLog(db *sql.DB, id int) (*RequestLog, error) {
 	// As of 2017-12-17 latency column in the RequestLogs table is not updated
 	r.Latency = time.Duration(time.Time(r.EndTime).Sub(time.Time(r.StartTime)).Nanoseconds())
 
-	// var appLogs
 	rows, err := db.Query("SELECT id, timestamp, level, message FROM AppLogs WHERE request_id = ?", id)
 	if err != nil {
 		return nil, err

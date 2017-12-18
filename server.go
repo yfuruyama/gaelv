@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strings"
 )
 
 type SSEServer struct {
@@ -30,6 +31,12 @@ func (s *SSEServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
+	fileServer := http.StripPrefix("/static/", http.FileServer(http.Dir("static")))
+	if strings.HasPrefix(r.URL.Path, "/static/") {
+		fileServer.ServeHTTP(w, r)
+		return
+	}
+
 	if r.URL.Path != "/" {
 		w.WriteHeader(http.StatusNotFound)
 		return
