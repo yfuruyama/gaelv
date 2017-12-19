@@ -27,9 +27,8 @@ func (c *Console) PrintLog(r *RequestLog) {
 	}
 
 	// format entire request log
-	level := r.GetLevel()
 	timestamp := time.Time(r.StartTime).Format("2006-01-02 15:04:05.000")
-	fmt.Printf("%s %s %s | %d | %s | %s | %s\n%s\n", timestamp, symbolForLevel(level), r.Method, r.Status, r.ResponseSizeStr(), r.LatencyStr(), r.Resource, appLogStr)
+	fmt.Printf("%s %s %s | %d | %s | %s | %s\n%s\n", timestamp, symbolForLevel(r.Level), r.Method, r.Status, r.ResponseSizeStr(), r.LatencyStr(), r.Resource, appLogStr)
 }
 
 func symbolForLevel(l LogLevel) string {

@@ -24,3 +24,8 @@ gaelv --logs_path=/tmp/gaelog.db
 
 * build with static files using go-bindata
 * Fix /usr/local/google-cloud-sdk/platform/google_appengine/google/appengine/api/logservice/logservice_stub.py
+* log line expansion is too slow
+* multiple connection
+* initial fetch
+* log scroll
+* 表記ゆれ

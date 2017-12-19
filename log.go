@@ -79,6 +79,7 @@ type RequestLog struct {
 	Latency       time.Duration `json:"latency"`
 	MCycles       int64         `json:"mCycles"`
 	Finished      bool          `json:"finished"`
+	Level         LogLevel      `json:"level"`
 	AppLogs       []AppLog      `json:"appLogs"`
 }
 
@@ -124,20 +125,20 @@ func FetchRequestLog(db *sql.DB, id int) (*RequestLog, error) {
 		r.AppLogs = append(r.AppLogs, a)
 	}
 
-	return &r, nil
-}
-
-func (r *RequestLog) GetLevel() LogLevel {
+	// Set level
 	if len(r.AppLogs) == 0 {
-		return INFO
-	}
-	level := r.AppLogs[0].Level
-	for _, a := range r.AppLogs {
-		if a.Level > level {
-			level = a.Level
+		r.Level = INFO
+	} else {
+		level := r.AppLogs[0].Level
+		for _, a := range r.AppLogs {
+			if a.Level > level {
+				level = a.Level
+			}
 		}
+		r.Level = level
 	}
-	return level
+
+	return &r, nil
 }
 
 func (r *RequestLog) LatencyStr() string {

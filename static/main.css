@@ -73,6 +73,10 @@ body {
     padding: 1px 4px 3px 5px;
 }
 
+.log-area {
+    overflow: scroll;
+}
+
 .log-line {
     /* height: 30px; */
 }
