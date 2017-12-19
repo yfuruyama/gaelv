@@ -22,17 +22,22 @@
 
   <div class="mdc-layout-grid">
     <input class="filter-input" v-model="filterText" placeholder="Filter by regexp" type="text">
-    <ul id="log-lines" class="mdc-list mdc-list--dense logview">
-      <li v-for="log in filteredLogs" class="mdc-list-item" v-on:click="toggleExpansion">
-        <!-- <div v-on:click="toggleExpansion" class="symbol-no-expanded"></div> -->
-        ${formattedTime(log.startTime)} ${log.method} ${log.status} ${log.responseSize} ${latencyStr(log.latency)} ${log.resource}
-        <div>
-          <ul class="non-expanded mdc-list">
-            <li v-for="appLog in log.appLogs" class="mdc-list-item">
-            ${appLog.level} ${formattedTime(appLog.time)} ${appLog.message}
-            </li>
-          </ul>
-        </div>
+    <!-- <ul id="log-lines" class="mdc-list mdc-list--dense logview"> -->
+    <ul id="log-lines" class="logview">
+      <!-- <li v-for="log in filteredLogs" class="mdc-list-item" v-on:click="toggleExpansion"> -->
+      <li v-for="log in filteredLogs" class="" v-on:click="toggleExpansion">
+        <div v-on:click="toggleExpansion(log)" class="symbol-no-expanded"></div>
+        <span>${formattedTime(log.startTime)} <span class="request-log-item">${log.method}</span><span class="request-log-item">${log.status}</span><span class="request-log-item">${log.responseSize}</span><span class="request-log-item">${latencyStr(log.latency)}</span>${log.resource}</span>
+        <!-- <ul class="non-expanded mdc-list mdc-list--dense" v-bind:class="{}"> -->
+          <!-- <li v-for="appLog in log.appLogs" class="mdc-list-item"> -->
+          <!-- ${appLog.level} ${formattedTime(appLog.time)} ${appLog.message} -->
+          <!-- </li> -->
+        <!-- </ul> -->
+        <ul class="non-expanded" v-bind:class="{}">
+          <li v-for="appLog in log.appLogs" class="">
+          ${appLog.level} ${formattedTime(appLog.time)} ${appLog.message}
+          </li>
+        </ul>
       </li>
     </ul>
   </div>

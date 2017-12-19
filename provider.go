@@ -16,7 +16,7 @@ type Provider struct {
 }
 
 const (
-	POLLING_INTERVAL time.Duration = 500 * time.Millisecond
+	POLLING_INTERVAL time.Duration = 10 * time.Millisecond
 )
 
 func NewProvider(logsPath string) (*Provider, error) {
