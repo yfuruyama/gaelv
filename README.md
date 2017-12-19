@@ -23,4 +23,4 @@ gaelv --logs_path=/tmp/gaelog.db
 ## TODO
 
 * build with static files using go-bindata
-* add --no-server option
+* Fix /usr/local/google-cloud-sdk/platform/google_appengine/google/appengine/api/logservice/logservice_stub.py

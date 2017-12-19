@@ -18,7 +18,7 @@
 
 <main id="app" class="mdc-toolbar-fixed-adjust">
   <div class="mdc-layout-grid">
-    <input class="filter-input" v-model="filterText" placeholder="Filter by regexp" type="text">
+    <input class="filter-input" v-model="filterText" v-on:keyup.enter="blurFilterInput" placeholder="Filter by regexp" type="text">
     <ul id="log-lines" class="logview">
       <li v-for="log in filteredLogs" class="log-line" v-on:click="toggleExpansion(log)">
         <div v-bind:class="{ 'symbol-expanded': log.expanded, 'symbol-no-expanded': !log.expanded }"></div>

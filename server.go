@@ -23,6 +23,8 @@ func (s *SSEServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Connection", "keep-alive")
 	w.Header().Set("Cache-Control", "no-cache")
 
+	log.Println("connection accepted")
+
 	for {
 		log := <-s.logc
 		fmt.Fprintf(w, "data: %s\n\n", log.ToJSON())

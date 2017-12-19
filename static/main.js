@@ -38,6 +38,9 @@ var app = new Vue({
     logLevelToSymbol: function(level) {
       return level.toLowerCase().substr(0, 1);
     },
+    blurFilterInput: function(e) {
+        e.target.blur();
+    },
   }
 });
 

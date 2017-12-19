@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"time"
+	"log"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -53,7 +54,7 @@ func (p *Provider) Next() (*RequestLog, error) {
 		ticker.Stop()
 		break
 	}
-	// log.Printf("New log found: %d\n", id)
+	log.Printf("New log found: %d\n", id)
 	p.lastRequestID = id
 
 	return FetchRequestLog(p.db, id)
