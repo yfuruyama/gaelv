@@ -25,13 +25,18 @@ var app = new Vue({
     latencyStr: function(latencyNs) {
       var latencyMs = latencyNs / 1000000;
       if (latencyMs > 1000) {
-        return `${latencyMs / 1000} s`
+        return `${latencyMs / 1000} s`;
       } else {
-        return `${latencyMs} ms`
+        return `${latencyMs} ms`;
       }
     },
-    toggleExpansion: function(e) {
-      console.log(e);
+    toggleExpansion: function(log) {
+      console.log("before: " + log.expanded);
+      log.expanded = !log.expanded;
+      console.log("after: " + log.expanded);
+    },
+    logLevelToSymbol: function(level) {
+      return level.toLowerCase().substr(0, 1);
     },
   }
 });

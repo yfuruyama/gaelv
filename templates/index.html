@@ -2,11 +2,9 @@
 <html>
 <head>
   <title>GAE Log Viewer</title>
-  <!-- <link rel="stylesheet" href="https://unpkg.com/material-components-web@0.27.0/dist/material-components-web.css"> -->
-  <link rel="stylesheet" href="static/vendor/material-components-web.0.27.0.css">
+  <link rel="stylesheet" href="https://unpkg.com/material-components-web@0.27.0/dist/material-components-web.css">
   <script type="text/javascript" src="https://unpkg.com/material-components-web@0.27.0/dist/material-components-web.js"></script>
-  <!-- <script src="https://unpkg.com/vue@2.5.11/dist/vue.min.js"></script> -->
-  <script src="static/vendor/vue.2.5.11.min.js"></script>
+  <script src="https://unpkg.com/vue@2.5.11/dist/vue.min.js"></script>
   <link href="static/main.css" rel="stylesheet">
 </head>
 <body class="mdc-typography">
@@ -19,23 +17,15 @@
 </header>
 
 <main id="app" class="mdc-toolbar-fixed-adjust">
-
   <div class="mdc-layout-grid">
     <input class="filter-input" v-model="filterText" placeholder="Filter by regexp" type="text">
-    <!-- <ul id="log-lines" class="mdc-list mdc-list--dense logview"> -->
     <ul id="log-lines" class="logview">
-      <!-- <li v-for="log in filteredLogs" class="mdc-list-item" v-on:click="toggleExpansion"> -->
-      <li v-for="log in filteredLogs" class="" v-on:click="toggleExpansion">
-        <div v-on:click="toggleExpansion(log)" class="symbol-no-expanded"></div>
-        <span>${formattedTime(log.startTime)} <span class="request-log-item">${log.method}</span><span class="request-log-item">${log.status}</span><span class="request-log-item">${log.responseSize}</span><span class="request-log-item">${latencyStr(log.latency)}</span>${log.resource}</span>
-        <!-- <ul class="non-expanded mdc-list mdc-list--dense" v-bind:class="{}"> -->
-          <!-- <li v-for="appLog in log.appLogs" class="mdc-list-item"> -->
-          <!-- ${appLog.level} ${formattedTime(appLog.time)} ${appLog.message} -->
-          <!-- </li> -->
-        <!-- </ul> -->
-        <ul class="non-expanded" v-bind:class="{}">
-          <li v-for="appLog in log.appLogs" class="">
-          ${appLog.level} ${formattedTime(appLog.time)} ${appLog.message}
+      <li v-for="log in filteredLogs" class="log-line" v-on:click="toggleExpansion(log)">
+        <div v-bind:class="{ 'symbol-expanded': log.expanded, 'symbol-no-expanded': !log.expanded }"></div>
+        <div class="request-info"><span>${formattedTime(log.startTime)} <span class="request-log-item">${log.method}</span><span class="request-log-item">${log.status}</span><span class="request-log-item">${log.responseSize}</span><span class="request-log-item">${latencyStr(log.latency)}</span>${log.resource}</span></div>
+        <ul class="app-log-lines" v-bind:class="{ expanded: log.expanded, 'no-expanded': !log.expanded }">
+          <li class="app-log-line" v-for="appLog in log.appLogs">
+              <span class="log-level" v-bind:class="'log-level-' + appLog.level.toLowerCase()">${logLevelToSymbol(appLog.level)}</span><span class="app-log-time">${formattedTime(appLog.time)}</span><span class="app-log-message">${appLog.message}</span>
           </li>
         </ul>
       </li>

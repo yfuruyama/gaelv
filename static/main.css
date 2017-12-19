@@ -2,14 +2,23 @@
 	--mdc-theme-primary: #2e5fe1;
 }
 
-.non-expanded {
-	/* display: none; */
+body {
+    font-size: 14px;
+}
+
+.no-expanded {
+    display: none;
+}
+
+.expanded {
+    display: block;
 }
 
 .symbol-no-expanded, .symbol-expanded {
 	width: 15px;
-	height: 40px;
+	height: 20px;
 	margin: 0 0 0 10px;
+    display: inline-block;
 }
 
 .symbol-no-expanded:after {
@@ -18,9 +27,8 @@
 	width: 0;
 	height: 0;
 	border: 5px solid transparent;
-	rotate(90deg);
 	border-color: transparent transparent transparent rgba(0, 0, 0, 0.654);
-	margin: 14px 0 0 0;
+	margin: 7px 0 0 0;
 }
 
 .symbol-expanded:after {
@@ -29,9 +37,50 @@
 	width: 0;
 	height: 0;
 	border: 5px solid transparent;
-	/* rotate(90deg); */
-	border-color: transparent transparent transparent rgba(0, 0, 0, 0.654);
-	margin: 14px 0 0 0;
+	border-color: rgba(0, 0, 0, 0.654) transparent transparent transparent;
+	margin: 7px 0 0 0;
+}
+
+.log-level {
+    color: #fff;
+    font-size: 12px;
+    border-radius: 3px;
+    border-color: #eee;
+}
+
+.log-level-debug {
+    background-color: #777;
+    padding: 2px 4px 2px 4px;
+}
+
+.log-level-info {
+    background-color: #76a8fa;
+    padding: 2px 6px 2px 6px;
+}
+
+.log-level-warning {
+    background-color: #f79917;
+    padding: 2px 4px 2px 4px;
+}
+
+.log-level-error {
+    background-color: #e87214;
+    padding: 2px 4px 3px 5px;
+}
+
+.log-level-critical {
+    background-color: #d34632;
+    padding: 1px 4px 3px 5px;
+}
+
+.log-line {
+    /* height: 30px; */
+}
+
+.request-info {
+    display: inline-block;
+    vertical-align: top;
+    padding: 2px 0 2px 0;
 }
 
 .request-log-item {
@@ -50,6 +99,14 @@
 	padding: 10px 0 0 0;
 }
 
+.app-log-line {
+    padding: 2px 2px 2px 2px;
+}
+
+ul {
+    list-style: none;
+}
+
 li {
 	border-top: solid 1px #eee;
 	/* border-bottom: solid 1px #eee; */
@@ -65,4 +122,12 @@ li:nth-child(2n+1) {
 
 li:hover {
 	background-color: #ffffcd;
+}
+
+.app-log-time {
+    margin: 0 0 0 10px;
+}
+
+.app-log-message {
+    margin: 0 0 0 10px;
 }
