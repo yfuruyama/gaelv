@@ -53,18 +53,19 @@ func main() {
 			console.PrintLog(requestLog)
 		}
 	} else {
-		logc := make(chan *gaelv.RequestLog)
+		s := gaelv.NewSSEServer()
+		s.Start()
+
 		go func() {
 			for {
 				requestLog, err := provider.Next()
 				if err != nil {
 					log.Fatal(err)
 				}
-				logc <- requestLog
+				s.Logc <- requestLog
 			}
 		}()
 
-		s := gaelv.NewSSEServer(logc)
 		http.Handle("/event/logs", s)
 		http.Handle("/", http.HandlerFunc(gaelv.IndexHandler))
 

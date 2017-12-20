@@ -9,13 +9,42 @@ import (
 )
 
 type SSEServer struct {
-	logc chan *RequestLog
+	connected    chan chan *RequestLog
+	disconnected chan chan *RequestLog
+	clients      map[chan *RequestLog]bool
+	Logc         chan *RequestLog
 }
 
-func NewSSEServer(logc chan *RequestLog) *SSEServer {
+func NewSSEServer() *SSEServer {
 	return &SSEServer{
-		logc: logc,
+		connected:    make(chan (chan *RequestLog)),
+		disconnected: make(chan (chan *RequestLog)),
+		clients:      make(map[chan *RequestLog]bool),
+		Logc:         make(chan *RequestLog),
 	}
+}
+
+func (s *SSEServer) Start() {
+	go func() {
+		for {
+			select {
+			case client := <-s.connected:
+				s.clients[client] = true
+				log.Println("client connected")
+			case client := <-s.disconnected:
+				delete(s.clients, client)
+				close(client)
+				log.Println("client disconnected")
+			case l := <-s.Logc:
+				if len(s.clients) > 0 {
+					for client, _ := range s.clients {
+						client <- l
+					}
+					log.Println("sent new log")
+				}
+			}
+		}
+	}()
 }
 
 func (s *SSEServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -23,11 +52,22 @@ func (s *SSEServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Connection", "keep-alive")
 	w.Header().Set("Cache-Control", "no-cache")
 
-	log.Println("connection accepted")
+	c := make(chan *RequestLog)
+	s.connected <- c
+
+	notify := w.(http.CloseNotifier).CloseNotify()
+	go func() {
+		<-notify
+		s.disconnected <- c
+	}()
 
 	for {
-		log := <-s.logc
-		fmt.Fprintf(w, "data: %s\n\n", log.ToJSON())
+		l, ok := <-c
+		if !ok {
+			// client disconnected
+			break
+		}
+		fmt.Fprintf(w, "data: %s\n\n", l.ToJSON())
 		w.(http.Flusher).Flush()
 	}
 }
