@@ -5,7 +5,7 @@ gaelv is a log viewer for Google App Engine local development.
 
 ## Install
 ```
-go get -u github.com/addsict/gaelv
+go get -u github.com/addsict/gaelv/...
 ```
 
 ## How to use
