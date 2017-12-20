@@ -31,6 +31,8 @@ func (s *SSEServer) Start() {
 			case client := <-s.connected:
 				s.clients[client] = true
 				log.Println("client connected")
+
+				// TODO: send latest logs to this client
 			case client := <-s.disconnected:
 				delete(s.clients, client)
 				close(client)
@@ -73,9 +75,19 @@ func (s *SSEServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	fileServer := http.StripPrefix("/static/", http.FileServer(http.Dir("static")))
 	if strings.HasPrefix(r.URL.Path, "/static/") {
-		fileServer.ServeHTTP(w, r)
+		data, err := Asset(strings.TrimLeft(r.URL.Path, "/"))
+		if err != nil {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+		if strings.HasSuffix(r.URL.Path, "css") {
+			w.Header().Set("Content-Type", "text/css; charset=utf-8")
+		}
+		if strings.HasSuffix(r.URL.Path, "js") {
+			w.Header().Set("Content-Type", "application/javascript")
+		}
+		fmt.Fprintln(w, string(data))
 		return
 	}
 
@@ -84,7 +96,12 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	t, err := template.ParseFiles("templates/index.html")
+	data, err := Asset("templates/index.html")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	t, err := template.New("").Parse(string(data))
 	if err != nil {
 		log.Fatalf("error parsing template: %s", err)
 	}
