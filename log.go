@@ -104,10 +104,29 @@ func (t LogTime) MarshalJSON() ([]byte, error) {
 	return []byte(fmt.Sprintf("%f", float64(time.Time(t).UnixNano())/1e9)), nil
 }
 
+func FetchLastRequestId(db *sql.DB) (int, error) {
+	var id int
+	// finished=0 means the request is still processing
+	if err := db.QueryRow("SELECT id FROM RequestLogs WHERE finished = 1 ORDER BY id DESC LIMIT 1").Scan(&id); err != nil {
+		switch {
+		case err == sql.ErrNoRows:
+			id = 0
+		default:
+			return 0, err
+		}
+	}
+	return id, nil
+}
+
 func FetchRequestLog(db *sql.DB, id int) (*RequestLog, error) {
 	var r RequestLog
 	if err := db.QueryRow("SELECT id, start_time, end_time, method, status, response_size, resource FROM RequestLogs WHERE id = ?", id).Scan(&r.ID, &r.StartTime, &r.EndTime, &r.Method, &r.Status, &r.ResponseSize, &r.Resource); err != nil {
-		return nil, err
+		switch {
+		case err == sql.ErrNoRows:
+			return nil, nil
+		default:
+			return nil, err
+		}
 	}
 
 	// As of 2017-12-17 latency column in the RequestLogs table is not updated

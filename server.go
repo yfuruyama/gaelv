@@ -13,14 +13,16 @@ type SSEServer struct {
 	disconnected chan chan *RequestLog
 	clients      map[chan *RequestLog]bool
 	Logc         chan *RequestLog
+	provider     *Provider
 }
 
-func NewSSEServer() *SSEServer {
+func NewSSEServer(provider *Provider) *SSEServer {
 	return &SSEServer{
 		connected:    make(chan (chan *RequestLog)),
 		disconnected: make(chan (chan *RequestLog)),
 		clients:      make(map[chan *RequestLog]bool),
 		Logc:         make(chan *RequestLog),
+		provider:     provider,
 	}
 }
 
@@ -32,7 +34,14 @@ func (s *SSEServer) Start() {
 				s.clients[client] = true
 				log.Println("client connected")
 
-				// TODO: send latest logs to this client
+				// send latest logs to the connected client
+				logs, err := s.provider.GetLatestLogs(50)
+				if err != nil {
+					log.Fatal(err)
+				}
+				for _, l := range logs {
+					client <- l
+				}
 			case client := <-s.disconnected:
 				delete(s.clients, client)
 				close(client)

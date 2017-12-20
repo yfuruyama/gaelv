@@ -50,6 +50,8 @@ var source = new EventSource('/event/logs');
 source.onmessage = function(e) {
   var log = JSON.parse(e.data);
   console.log(log);
-  log.expanded = false;
-  app.logs.unshift(log);
+  if (log) {
+    log.expanded = false;
+    app.logs.unshift(log);
+  }
 };

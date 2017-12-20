@@ -53,7 +53,7 @@ func main() {
 			console.PrintLog(requestLog)
 		}
 	} else {
-		s := gaelv.NewSSEServer()
+		s := gaelv.NewSSEServer(provider)
 		s.Start()
 
 		go func() {

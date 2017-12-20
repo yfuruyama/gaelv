@@ -16,7 +16,7 @@ type Provider struct {
 }
 
 const (
-	POLLING_INTERVAL time.Duration = 10 * time.Millisecond
+	POLLING_INTERVAL time.Duration = 100 * time.Millisecond
 )
 
 func NewProvider(logsPath string) (*Provider, error) {
@@ -29,8 +29,13 @@ func NewProvider(logsPath string) (*Provider, error) {
 		return nil, err
 	}
 
+	id, err := FetchLastRequestId(db)
+	if err != nil {
+		return nil, err
+	}
+
 	return &Provider{
-		lastRequestID: 0,
+		lastRequestID: id,
 		db:            db,
 	}, nil
 }
@@ -38,22 +43,36 @@ func NewProvider(logsPath string) (*Provider, error) {
 // block until next log comes in
 func (p *Provider) Next() (*RequestLog, error) {
 	ticker := time.NewTicker(POLLING_INTERVAL)
-	var id int
+	var lastId int
 	for {
 		<-ticker.C
-		// finished=0 means the request is still processing
-		if err := p.db.QueryRow("SELECT id FROM RequestLogs WHERE id > ? AND finished = 1", p.lastRequestID).Scan(&id); err != nil {
-			switch {
-			case err == sql.ErrNoRows:
-				continue
-			default:
-				return nil, err
-			}
+		id, err := FetchLastRequestId(p.db)
+		if err != nil {
+			return nil, err
 		}
+		if id == p.lastRequestID {
+			continue
+		}
+		lastId = id
+
 		ticker.Stop()
 		break
 	}
-	p.lastRequestID = id
+	p.lastRequestID = lastId
 
-	return FetchRequestLog(p.db, id)
+	return FetchRequestLog(p.db, p.lastRequestID)
+}
+
+func (p *Provider) GetLatestLogs(num int) ([]*RequestLog, error) {
+	logs := make([]*RequestLog, 0, num)
+	for i := num - 1; i >= 0; i-- {
+		l, err := FetchRequestLog(p.db, p.lastRequestID-i)
+		if err != nil {
+			return nil, err
+		}
+		if l != nil {
+			logs = append(logs, l)
+		}
+	}
+	return logs, nil
 }
