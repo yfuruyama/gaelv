@@ -17,17 +17,19 @@
 </header>
 
 <main id="app" class="mdc-toolbar-fixed-adjust">
-  <div class="mdc-layout-grid">
-    <input class="filter-input" v-model="filterText" v-on:keyup.enter="blurFilterInput" placeholder="Filter by regexp" type="text">
+  <div class="container">
+    <input class="filter-input" v-model="filterText" v-on:keyup.enter="blurFilterInput" placeholder="Filter url by regexp" type="text">
     <div class="log-area">
       <ul id="log-lines" class="logview">
-        <li v-for="log in filteredLogs" class="log-line" v-on:click="toggleExpansion(log)">
-          <div v-bind:class="{ 'symbol-expanded': log.expanded, 'symbol-no-expanded': !log.expanded }"></div>
-          <span class="log-level" v-bind:class="'log-level-' + log.level.toLowerCase()">${logLevelToSymbol(log.level)}</span>
-          <div class="request-info"><span>${formattedTime(log.startTime)} <span class="request-log-item">${log.method}</span><span class="request-log-item">${log.status}</span><span class="request-log-item">${log.responseSize}</span><span class="request-log-item">${latencyStr(log.latency)}</span>${log.resource}</span></div>
+        <li v-for="log in filteredLogs" class="log-line">
+          <div v-on:click="log.expanded = !log.expanded">
+            <div v-bind:class="{ 'symbol-expanded': log.expanded, 'symbol-no-expanded': !log.expanded }"></div>
+            <div class="log-level" v-bind:class="'log-level-' + log.level.toLowerCase()">${logLevelToSymbol(log.level)}</div>
+            <div class="request-summary"><span>${formatTime(log.startTime)} <span class="request-log-item request-log-item-method">${log.method}</span><span class="request-log-item request-log-item-status">${log.status}</span><span class="request-log-item request-log-item-size">${formatSize(log.responseSize)}</span><span class="request-log-item request-log-item-latency">${latencyStr(log.latency)}</span><span class="request-log-item-resource">${log.resource}</span></div>
+          </div>
           <ul class="app-log-lines" v-bind:class="{ expanded: log.expanded, 'no-expanded': !log.expanded }">
             <li class="app-log-line" v-for="appLog in log.appLogs">
-                <span class="log-level" v-bind:class="'log-level-' + appLog.level.toLowerCase()">${logLevelToSymbol(appLog.level)}</span><span class="app-log-time">${formattedTime(appLog.time)}</span><span class="app-log-message">${appLog.message}</span>
+                <div class="log-level" v-bind:class="'log-level-' + appLog.level.toLowerCase()">${logLevelToSymbol(appLog.level)}</div><span class="app-log-time">${formatTime(appLog.time)}</span><span class="app-log-message">${appLog.message}</span>
             </li>
           </ul>
         </li>

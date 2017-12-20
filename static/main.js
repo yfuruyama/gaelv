@@ -16,24 +16,26 @@ var app = new Vue({
     },
   },
   methods: {
-    formattedTime: function (time) {
+    formatTime: function (time) {
       var d = new Date(time * 1000);
-      // TODO: zero padding
-      return `${d.getFullYear()}-${(d.getMonth() + 1)}-${d.getDate()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}.${d.getMilliseconds()}`
-           ;
+      return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2) + '-' + ('0'+d.getDate()).slice(-2) + ' ' +
+        ('0'+d.getHours()).slice(-2) + ':' + ('0'+d.getMinutes()).slice(-2) + ':' + ('0'+d.getSeconds()).slice(-2) + '.' +
+        ('00'+d.getMilliseconds()).slice(-3);
+    },
+    formatSize: function (size) {
+      if (size > 1024) {
+        return parseInt(size / 1024) + ' KB';
+      } else {
+        return size + ' B';
+      }
     },
     latencyStr: function(latencyNs) {
       var latencyMs = latencyNs / 1000000;
       if (latencyMs > 1000) {
-        return `${latencyMs / 1000} s`;
+        return parseInt(latencyMs / 1000) + ' s';
       } else {
-        return `${latencyMs} ms`;
+        return parseInt(latencyMs) + ' ms';
       }
-    },
-    toggleExpansion: function(log) {
-      console.log("before: " + log.expanded);
-      log.expanded = !log.expanded;
-      console.log("after: " + log.expanded);
     },
     logLevelToSymbol: function(level) {
       return level.toLowerCase().substr(0, 1);
@@ -48,5 +50,6 @@ var source = new EventSource('/event/logs');
 source.onmessage = function(e) {
   var log = JSON.parse(e.data);
   console.log(log);
-  app.logs.push(log);
+  log.expanded = false;
+  app.logs.unshift(log);
 };
