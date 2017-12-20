@@ -19,17 +19,17 @@ Options:
 
     --logs_path        Path to logs file
     --port             Port for server
-    --no_server        Stop running http server (console mode)
+    --console          Print logs in the console
 `
 
 func main() {
 	var logsPath string
 	var port int
-	var noServer bool
+	var consoleMode bool
 
 	flag.StringVar(&logsPath, "logs_path", "", "Path to logs file")
 	flag.IntVar(&port, "port", 9090, "Port for server")
-	flag.BoolVar(&noServer, "no_server", false, "Stop running server (console mode)")
+	flag.BoolVar(&consoleMode, "console", false, "Print logs in the console")
 	flag.Usage = func() { fmt.Fprint(os.Stderr, usage) }
 	flag.Parse()
 
@@ -43,7 +43,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if noServer {
+	if consoleMode {
 		console := gaelv.NewConsole()
 		for {
 			requestLog, err := provider.Next()

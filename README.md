@@ -22,6 +22,16 @@ gaelv --logs_path=/tmp/gaelog.db
 
 3. Open http://localhost:9090/ on your browser.
 
+## Console mode
+
+If you want to see logs in the console instead of a browser, run gaelv with `--console` option.
+
+```
+gaelv --logs_path=/tmp/gaelog.db --console
+```
+
+<img alt="screenshot2" src="https://raw.github.com/addsict/gaelv/master/img/screenshot2.png">
+
 ## FAQ
 
 ### The latest logs doesn't appear immediately.
