@@ -3,11 +3,10 @@
 }
 
 body {
-    font-size: 14px;
 }
 
 .container {
-	/* display: flex; */
+    font-size: 12px;
 }
 
 .no-expanded {
@@ -60,27 +59,22 @@ body {
 
 .log-level-debug {
     background-color: #777;
-    /* padding: 2px 4px 2px 4px; */
 }
 
 .log-level-info {
     background-color: #76a8fa;
-    /* padding: 2px 6px 2px 6px; */
 }
 
 .log-level-warning {
     background-color: #f79917;
-    /* padding: 2px 4px 2px 4px; */
 }
 
 .log-level-error {
     background-color: #e87214;
-    /* padding: 2px 4px 3px 5px; */
 }
 
 .log-level-critical {
     background-color: #d34632;
-    /* padding: 1px 4px 3px 5px; */
 }
 
 .log-area {
@@ -116,22 +110,22 @@ body {
 }
 
 .request-log-item-method {
-	width: 40px;
+	width: 35px;
 	text-align: left;
 }
 
 .request-log-item-status {
-	width: 30px;
+	width: 25px;
 	text-align: center;
 }
 
 .request-log-item-size {
-	width: 65px;
+	width: 55px;
 	text-align: right;
 }
 
 .request-log-item-latency {
-	width: 55px;
+	width: 50px;
 	text-align: right;
 }
 
