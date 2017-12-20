@@ -30,7 +30,7 @@ If you want to see logs in the console instead of a browser, run gaelv with `--c
 gaelv --logs_path=/tmp/gaelog.db --console
 ```
 
-<img alt="screenshot2" src="https://raw.github.com/addsict/gaelv/master/img/screenshot2.png">
+<img alt="screenshot2" src="https://raw.github.com/addsict/gaelv/master/img/screenshot2.png" width="500">
 
 ## FAQ
 
