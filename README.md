@@ -1,7 +1,7 @@
 # gaelv
 gaelv is a log viewer for Google App Engine local development.
 
-![screenshot](https://raw.github.com/addsict/gaelv/master/img/screenshot.png)
+<img alt="screenshot" src="https://raw.github.com/addsict/gaelv/master/img/screenshot.png" width="600">
 
 ## Install
 ```
