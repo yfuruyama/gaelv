@@ -1,5 +1,7 @@
 # gaelv
-gaelv is a Log Viewer for Google App Engine local development.
+gaelv is a log viewer for Google App Engine local development.
+
+![screenshot](https://raw.github.com/addsict/gaelv/master/img/screenshot.png)
 
 ## Install
 ```
@@ -24,8 +26,8 @@ gaelv --logs_path=/tmp/gaelog.db
 
 ### The latest logs doesn't appear immediately.
 
-Unfortunately, the latest logs are buffered in the app engine log service for 5 seconds.
-There is no workaround for it except modifying sdk source code now, so please change the value `_MIN_COMMIT_INTERVAL` to `0` in `${SDK_ROOT_PATH}/platform/google_appengine/google/appengine/api/logservice/logservice_stub.py`.
+Unfortunately, the latest logs are buffered in the app engine log service for 5 seconds. 
+There is no workaround for it except modifying sdk source code now, so please change the value `_MIN_COMMIT_INTERVAL` to `0` in `${SDK_ROOT_PATH}/platform/google_appengine/google/appengine/api/logservice/logservice_stub.py`. 
 (You can find your sdk root path by `gcloud info --format="value(installation.sdk_root)`.)
 
 ```diff
