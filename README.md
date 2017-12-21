@@ -3,6 +3,13 @@ gaelv is a log viewer for Google App Engine local development.
 
 <img alt="screenshot" src="https://raw.github.com/addsict/gaelv/master/img/screenshot.png" width="600">
 
+## Motivation
+
+This tool aims to empower your local development with following features:
+
+* Provide a rich and powerful log viewer like Stackdriver log viewer.
+* Make logs persistent and searchable.
+
 ## Install
 ```
 go get -u github.com/addsict/gaelv/...
@@ -10,27 +17,33 @@ go get -u github.com/addsict/gaelv/...
 
 ## How to use
 
-1. Run your app server (`dev_appserver.py`) with `--logs_path=</path/to/log.db>` option.
+1. Run your app server (`dev_appserver.py`) with `--logs_path=<log_path>` option.
 ```
-dev_appserver.py app.yaml --logs_path=/tmp/gaelog.db
+dev_appserver.py app.yaml --logs_path=/tmp/log.db
 ```
 
 2. Run `gaelv` with same `--logs_path` option.
 ```
-gaelv --logs_path=/tmp/gaelog.db
+gaelv --logs_path=/tmp/log.db
 ```
 
 3. Open http://localhost:9090/ on your browser.
 
 ## Console mode
 
-If you want to see logs in the console instead of a browser, run gaelv with `--console` option.
+If you want to see logs in the console instead of a browser, run `gaelv` with `--console` option.
 
 ```
-gaelv --logs_path=/tmp/gaelog.db --console
+gaelv --logs_path=/tmp/log.db --console
 ```
 
 <img alt="screenshot2" src="https://raw.github.com/addsict/gaelv/master/img/screenshot2.png" width="500">
+
+## Supported Runtime
+
+* GAE/Go
+* GAE/Python
+* GAE/PHP
 
 ## FAQ
 
