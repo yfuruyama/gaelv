@@ -35,7 +35,7 @@ func (s *SSEServer) Start() {
 				log.Println("client connected")
 
 				// send latest logs to the connected client
-				logs, err := s.provider.GetLatestLogs(500)
+				logs, err := s.provider.GetLatestLogs(100)
 				if err != nil {
 					log.Fatal(err)
 				}
