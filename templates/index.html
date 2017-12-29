@@ -19,6 +19,9 @@
 <main id="app" class="mdc-toolbar-fixed-adjust">
   <div class="container">
     <input class="filter-input" v-model="filterText" v-on:keyup.enter="blurFilterInput" placeholder="Filter url by regexp" type="text">
+    <div class="toggle-expand-all">
+      <input type="checkbox" id="expand-all" v-model="isExpandAll"><label for="expand-all">Expand all</label>
+    </div>
     <div class="log-area">
       <ul id="log-lines" class="logview">
         <li v-for="log in filteredLogs" class="log-line">

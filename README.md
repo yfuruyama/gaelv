@@ -64,3 +64,17 @@ Supported runtimes are following,
 * GAE/Go
 * GAE/Python
 * GAE/PHP
+
+## For development this tool
+
+Instal go-bindata
+
+```
+go get -u github.com/jteeuwen/go-bindata/...
+```
+
+Build templates and static files
+
+```
+make build
+```

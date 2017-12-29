@@ -4,8 +4,14 @@ var app = new Vue({
   data: {
     filterText: "",
     logs: [],
+    isExpandAll: false,
   },
   watch: {
+    isExpandAll: function(val) {
+      app.logs.forEach(function(log) {
+        log.expanded = val;
+      });
+    },
   },
   computed: {
     filteredLogs: function() {
@@ -51,7 +57,7 @@ source.onmessage = function(e) {
   var log = JSON.parse(e.data);
   console.log(log);
   if (log) {
-    log.expanded = false;
+    log.expanded = app.isExpandAll;
     app.logs.unshift(log);
   }
 };

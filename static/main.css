@@ -9,6 +9,10 @@ body {
     font-size: 12px;
 }
 
+.toggle-expand-all {
+    margin: 5px 0 5px 0;
+}
+
 .no-expanded {
     display: none;
 }
@@ -80,7 +84,7 @@ body {
 .log-area {
 	overflow: auto;
 	position: absolute;
-	top: 120px;
+	top: 130px;
 	bottom: 0;
 	width: 99%;
 	margin: 10px 0 0 0;
