@@ -43,7 +43,7 @@ gaelv --logs_path=/tmp/log.db --console
 
 ### The latest logs doesn't appear immediately.
 Unfortunately, new logs are buffered in the app engine log service for 5 seconds.  
-There is no workaround for it now except modifying sdk source code, so please change the value `_MIN_COMMIT_INTERVAL` to `0` in the file `/usr/local/google-cloud-sdk/platform/google_appengine/google/appengine/api/logservice/logservice_stub.py`.  
+There is no workaround for it now except modifying sdk source code, so please change the value `_MIN_COMMIT_INTERVAL` to `0` in the file `${SDK_ROOT_PATH}/platform/google_appengine/google/appengine/api/logservice/logservice_stub.py`.  
 You can find your sdk root path by: `gcloud info --format="value(installation.sdk_root)"`
 
 #### diff
